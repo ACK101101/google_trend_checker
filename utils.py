@@ -1,4 +1,6 @@
 import os
+import glob
+import pandas as pd
 from pytrends.request import TrendReq
 from time import sleep
 
@@ -69,6 +71,7 @@ def get_input_date(when):
     while confirm != "y":
         date = input("Please re-enter {w} date in MM/DD/YYYY format: ".format(w = when))
         confirm = input("Press y to confirm, any other key to go back: ")
+    print("\n")
     format_date = makeDate(date.strip())
 
     return format_date
@@ -79,6 +82,7 @@ def topic_or_keyword():
     while t_or_k != "t" or t_or_k != "k":
         print("Error: input was not t for topic or k for keyword")
         t_or_k = input("Search by topic (enter t) or by keyword (enter k)? ")
+    print("\n")
 
     return t_or_k
 
@@ -90,6 +94,7 @@ def get_keyword_input():
     while confirm != "y":
         keyword = input("Please re-enter search query: ")
         confirm = input("Press y to confirm, any other key to go back: ")
+    print("\n")
     name = makeName(keyword)
 
     return keyword, name
@@ -137,10 +142,11 @@ def dfCleaner(df, loc, metro):
         print("     Found data for " + loc)
         
         if metro != -1:
-            df[metro[-2:]] = ''
-            df[metro[:-2]] = ''
+            df["State"] = metro[-2:]
+            df["DMA"] = metro[:-2]
+            df["Full"] = metro
         else:
-            df[loc] = ''
+            df["State"] = loc
     
     return df, isData, log
 
@@ -233,6 +239,13 @@ def saveLog(logfile, dir_path, name):
                 f.write(line + '\n')
     
     return
+
+def megaCSV(path):
+    all_csvs = glob.glob(os.path.join(path, '*.csv'))
+    mega = pd.concat(map(pd.read_csv, all_csvs), ignore_index=True)
+    mega.to_csv(os.path.join(path, "mega.csv"))
+
+    return 
 
 
 def done(dir_path, name):

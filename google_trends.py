@@ -25,6 +25,9 @@ def main():
         
     utils.saveLog(logfile, dir_path, name)
 
+    utils.megaCSV(path = dir_path + '/' + name + '/Keyword' + '/State')
+    utils.megaCSV(path = dir_path + '/' + name + '/Keyword' + '/DMA')
+
     utils.done(dir_path, name)
 
 
